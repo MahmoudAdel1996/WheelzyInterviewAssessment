@@ -1,5 +1,5 @@
 ﻿WITH CurrentStatus AS
-         (SELECT OfferId, Max(Date) AS Date
+         (SELECT OfferId, Max(Date) AS [Date]
           FROM [OfferStatus]
           GROUP BY OfferId)
 SELECT o.Id as OfferId,

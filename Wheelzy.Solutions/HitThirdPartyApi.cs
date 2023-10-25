@@ -7,7 +7,7 @@ public class ResponseDto<T>
     public T? Value { get; set; }
 }
 
-public class HitThirdPartyApi
+public static class HitThirdPartyApi
 {
     public static async Task Exec()
     {
@@ -18,7 +18,6 @@ public class HitThirdPartyApi
             var customerNumber = GenerateRandomNumber();
             Console.WriteLine($"Attempt {i}: Sending customer number {customerNumber}");
             var result = await PlayLottery(apiUrl, customerNumber);
-            Console.WriteLine($"Received result: {result.Value}");
             if (!result.IsSuccess)
             {
                 Console.WriteLine($"Error! {result.Message}");
@@ -26,6 +25,7 @@ public class HitThirdPartyApi
             }
             if (result.IsSuccess && result.Value == customerNumber)
             {
+                Console.WriteLine($"Received result: {result.Value}");
                 Console.WriteLine($"Congratulations! You've won!");
                 break;
             }
@@ -41,7 +41,19 @@ public class HitThirdPartyApi
         {
             new KeyValuePair<string, string>("customerNumber", customerNumber.ToString())
         });
-        var response = await client.PostAsync(apiUrl, content);
+        HttpResponseMessage response;
+        try
+        {
+            response = await client.PostAsync(apiUrl, content);
+
+        }
+        catch (Exception e)
+        {
+            return new ResponseDto<int>
+            {
+                Message = $"Http error: {e.Message}"
+            };
+        }
         var responseContent = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

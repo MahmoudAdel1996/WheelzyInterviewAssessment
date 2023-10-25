@@ -1,11 +1,11 @@
 ﻿WITH CurrentStatus AS
          (SELECT OfferId, Max(Date) AS Date
-          FROM [OfferStauts]
+          FROM [OfferStatus]
           GROUP BY OfferId)
 SELECT o.Id as OfferId,
        o.Date as OfferDate,
        b.Name as CurrentBuyer,
-       oa.Amount as CurrentAmoutn,
+       oa.Amount as CurrentAmount,
        os.Status as CurrentStatus
 FROM [Offer] o
          JOIN OfferAmount oa ON o.OfferAmountId = oa.Id
